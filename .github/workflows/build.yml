@@ -14,8 +14,8 @@ jobs:
       - name: Save Image to Tarball
         run: docker save -o zork-jail.tar zork-jail:v1
 
-      - name: Upload Artifact for Download
-        uses: actions/upload-artifact@v4  # <-- UPDATED to v4
-        with:
-          name: zork-offline-image
-          path: zork-jail.tar
+      - name: Save Image to Tarball
+        run: docker save -o zork-jail.tar zork-jail:v1
+
+      - name: Encode Tarball to Base64 Text
+        run: base64 zork-jail.tar > zork-jail.txt
