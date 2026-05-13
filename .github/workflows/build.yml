@@ -1,0 +1,21 @@
+name: Build and Export Zork Container
+on: [push] # Runs automatically when you save this file
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build the Docker Image
+        run: docker build -t zork-jail:v1 .
+
+      - name: Save Image to Tarball
+        run: docker save -o zork-jail.tar zork-jail:v1
+
+      - name: Upload Artifact for Download
+        uses: actions/upload-artifact@v3
+        with:
+          name: zork-offline-image
+          path: zork-jail.tar
