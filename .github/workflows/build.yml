@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # <-- UPDATED to v4
+        uses: actions/checkout@v4
 
       - name: Build the Docker Image
         run: docker build -t zork-jail:v1 .
@@ -14,8 +14,13 @@ jobs:
       - name: Save Image to Tarball
         run: docker save -o zork-jail.tar zork-jail:v1
 
-      - name: Save Image to Tarball
-        run: docker save -o zork-jail.tar zork-jail:v1
+      - name: Encode to Base64
+        run: |
+          mkdir output_folder
+          base64 zork-jail.tar > output_folder/zork-jail.txt
 
-      - name: Encode Tarball to Base64 Text
-        run: base64 zork-jail.tar > zork-jail.txt
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zork-offline-text
+          path: output_folder/
