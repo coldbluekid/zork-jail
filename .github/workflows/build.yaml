@@ -1,0 +1,23 @@
+name: Fetch Rancher Offline Image
+on: [push] 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Official Rancher Image
+        run: docker pull rancher/rancher:latest
+
+      - name: Save Image to Tarball
+        run: docker save -o rancher-server.tar rancher/rancher:latest
+
+      - name: Stage for Download
+        run: |
+          mkdir output_folder
+          mv rancher-server.tar output_folder/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rancher-offline-image
+          path: output_folder/
