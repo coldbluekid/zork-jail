@@ -1,4 +1,4 @@
-name: Fetch Rancher Offline Image
+name: Fetch Rancher Offline Image (Encoded)
 on: [push] 
 
 jobs:
@@ -11,13 +11,13 @@ jobs:
       - name: Save Image to Tarball
         run: docker save -o rancher-server.tar rancher/rancher:latest
 
-      - name: Stage for Download
+      - name: Encode to Base64 Text
         run: |
           mkdir output_folder
-          mv rancher-server.tar output_folder/
+          base64 rancher-server.tar > output_folder/rancher-server.txt
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rancher-offline-image
+          name: rancher-offline-text
           path: output_folder/
