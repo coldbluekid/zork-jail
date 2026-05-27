@@ -1,3 +1,4 @@
+#rancher
 name: Fetch Rancher Offline Image (Encoded)
 on: [push] 
 
