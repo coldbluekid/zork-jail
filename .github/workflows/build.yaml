@@ -1,6 +1,7 @@
-#rancher
-name: Fetch Rancher Offline Image (Encoded)
-on: [push] 
+name: Fetch Rancher Image (Encoded Single File)
+on: 
+  push:
+  workflow_dispatch: 
 
 jobs:
   build:
