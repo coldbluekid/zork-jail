@@ -1,7 +1,5 @@
-name: Fetch Rancher Image (Encoded Single File)
-on: 
-  push:
-  workflow_dispatch: 
+name: Fetch Rancher Offline Image (Chunked)
+on: [push] 
 
 jobs:
   build:
@@ -13,13 +11,13 @@ jobs:
       - name: Save Image to Tarball
         run: docker save -o rancher-server.tar rancher/rancher:latest
 
-      - name: Encode to Base64 Text
+      - name: Encode and Split into 500MB Chunks
         run: |
           mkdir output_folder
-          base64 rancher-server.tar > output_folder/rancher-server.txt
-
-      - name: Upload Artifact
+          base64 rancher-server.tar | split -b 500m - output_folder/rancher_part_
+          
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: rancher-offline-text
+          name: rancher-chunks
           path: output_folder/
