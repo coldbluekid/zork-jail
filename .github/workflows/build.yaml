@@ -1,7 +1,9 @@
-name: Fetch Rancher Image (Chunked Text)
+name: Publish Rancher Chunks as Release
 on: 
-  push:
   workflow_dispatch: 
+
+permissions:
+  contents: write # Crucial: Allows the pipeline to create a Release
 
 jobs:
   build:
@@ -13,14 +15,14 @@ jobs:
       - name: Save Image to Tarball
         run: docker save -o rancher-server.tar rancher/rancher:latest
 
-      - name: Encode and Split into 500MB Text Chunks
+      - name: Encode and Split into 200MB Text Chunks
         run: |
-          mkdir output_folder
-          # Encode to base64, then split into 500MB chunks with a .txt suffix
-          base64 rancher-server.tar | split -b 500m --additional-suffix=.txt - output_folder/rancher_part_
+          mkdir release_chunks
+          base64 rancher-server.tar | split -b 200m --additional-suffix=.txt - release_chunks/rancher_part_
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v1
         with:
-          name: rancher-offline-chunks
-          path: output_folder/
+          tag_name: rancher-build-${{ github.run_id }}
+          name: "Rancher Offline Chunks"
+          files: release_chunks/*
